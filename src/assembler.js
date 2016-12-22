@@ -71,9 +71,7 @@ function readData(data) {
 		 * Data Transfer Group
 		 */
 		case 'mov': 
-			/*
-			 * Move instructions - 6 scenarios
-			 */
+			// Read the arguments for the opcode.
 			var r1 = readWord(opcodeLine);
 			var r2 = readWord(opcodeLine);
 			
@@ -101,8 +99,15 @@ function readData(data) {
 			}
 			
 			/*
-			 * MOV r1, r2
+			 * MOV M, r
+			 * ((H)(L)) <- (r)
+			 * Move to memory
 			 */
+			else if((r1[0] == 'M') && (r2[0] == 'r')) {
+				var sss = regToBitcode(r2);
+				
+				mcode = (0x01 << 6) | (0x06 << 3) | (sss);
+			}
 			
 			break;
 		default:
