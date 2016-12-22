@@ -1,3 +1,3 @@
-mov r1, r2
-mov r2, r3
-mov r3, r1
+mov rA, rB
+mov rA, rC
+mov rB, rD

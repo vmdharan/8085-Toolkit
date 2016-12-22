@@ -27,6 +27,28 @@ function asm8085() {
 }
 
 /*
+ * Determine the bitcode for a given register.
+ * reg - Register
+ */
+function regToBitcode(reg) {
+	var bits;
+	
+	switch(reg) {
+	case 'rA': bits = 0x07; break;
+	case 'rB': bits = 0x00; break;
+	case 'rC': bits = 0x01; break;
+	case 'rD': bits = 0x02; break;
+	case 'rE': bits = 0x03; break;
+	case 'rH': bits = 0x04; break;
+	case 'rL': bits = 0x05; break;
+	default: console.log('[LOG] Error in regToBitcode, reg value: ' + reg);
+		break;
+	}
+	
+	return bits;
+}
+
+/*
  * Read and parse 8085 assembly language instructions from the data stream.
  * data - character stream.
  */
@@ -43,10 +65,17 @@ function readData(data) {
 		console.log(opcodeLine);
 		
 		switch(opcode) {
-		case 'mov': mcode = 0x01;
-			console.log(opcode);
-			console.log(readWord(opcodeLine));
-			console.log(readWord(opcodeLine));
+		case 'mov': 
+			/*
+			 * MOV r1, r2
+			 */
+			var r1 = readWord(opcodeLine);
+			var r2 = readWord(opcodeLine);
+			
+			var ddd = regToBitcode(r1);
+			var sss = regToBitcode(r2);
+			
+			mcode = (0x01 << 6) | (ddd << 3) | (sss);
 			break;
 		default: break;
 		}
