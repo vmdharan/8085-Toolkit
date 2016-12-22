@@ -210,24 +210,108 @@ function readData(data) {
 			break;
 		
 		case 'lda':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			
+			/*
+			 * LDA addr
+			 * (A) <- ((byte3)(byte2))
+			 * Load Accumulator direct
+			 */
+			mcode = (0x3a);
+			byte2 = r1;
+			byte3 = r2;
+			
 			break;
 		
 		case 'sta':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			
+			/*
+			 * STA addr
+			 * ((byte3)(byte2)) <- (A)
+			 * Store Accumulator direct
+			 */
+			mcode = (0x32);
+			byte2 = r1;
+			byte3 = r2;
+			
 			break;
 		
 		case 'lhld':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			
+			/*
+			 * LHLD addr
+			 * (L) <- ((byte3)(byte2))
+			 * (H) <- ((byte3)(byte2) + 1)
+			 * Load H and L direct
+			 */
+			mcode = (0x2a);
+			byte2 = r1;
+			byte3 = r2;
+			
 			break;
 			
 		case 'shld':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			
+			/*
+			 * SHLD addr
+			 * ((byte3)(byte2)) <- (L)
+			 * ((byte3)(byte2) + 1) <- (H)
+			 * Store H and L direct
+			 */
+			mcode = (0x22);
+			byte2 = r1;
+			byte3 = r2;
+			
 			break;
 			
 		case 'ldax':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * LDAX rp
+			 * (A) <- ((rp))
+			 * Load accumulator indirect
+			 */
+			rp = rpToBitcode(r1);
+			mcode = (0x00 << 6) | (rp << 4) | (0x0a);
+			
 			break;
 		
 		case 'stax':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * STAX rp
+			 * ((rp)) <- (A)
+			 * Store accumulator indirect
+			 */
+			rp = rpToBitcode(r1);
+			mcode = (0x00 << 6) | (rp << 4) | (0x02);
+			
 			break;
 			
 		case 'xchg':
+			/*
+			 * XCHG
+			 * (H) <-> (D)
+			 * (L) <-> (E)
+			 * Exchange H and L with D and E.
+			 */
+			mcode = (0xeb);
+			
 			break;
 			
 		/*
