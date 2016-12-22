@@ -3,18 +3,22 @@
  * Convert 8085 instructions to machine code.
  */
 
+// Print out test line.
 var asm = '8085 instructions';
 console.log(asm);
 
-var charIndex = 0;
-var argIndex = 0;
+var charIndex = 0; // Index in the data stream (global).
+var argIndex = 0;  // Index in the instruction line.
 
 fs = require('fs');
 
+// Execute
 asm8085();
 
 
-
+/*
+ * Main entry point for the 8085 assembler.
+ */
 function asm8085() {
 	this.srcFile = './data/8085test.dat';
 	this.data = fs.readFileSync(this.srcFile, 'utf8');
@@ -22,6 +26,10 @@ function asm8085() {
 	readData(this.data);
 }
 
+/*
+ * Read and parse 8085 assembly language instructions from the data stream.
+ * data - character stream.
+ */
 function readData(data) {
 	var opcode, opcodeLine;
 	var mcode = 0;
@@ -53,15 +61,19 @@ function readData(data) {
  * (one instruction per line).
  */
 function readLine(data) {
+	// Variable to hold the characters in the opcode line.
 	var opcodeLine = '';
 	
 	for(var i = charIndex; i < data.length; i++) {
+		// End of the line, so break and return the line that was parsed.
 		if(data[i] == '\n') {
 			break;
 		}
+		// Carriage return, continue reading till the newline symbol.
 		else if(data[i] == '\r') {
 			continue;
 		}
+		// This is a valid char for the opcode line.
 		else {
 			opcodeLine += data[i];
 		}
@@ -73,32 +85,39 @@ function readLine(data) {
 }
 
 /*
- * Parse opcodes given the instruction line.
+ * Parse opcodes and their arguments given the instruction line.
  * data - a line containing an instruction for the 8085.
  */
 function readWord(data) {
+	// Variable to hold the opcode and/or their arguments.
 	var opcode = '';
 	
 	for(var i = argIndex; i < data.length; i++) {
+		// End of the line, break and return the opcode.
 		if(data[i] == '\n') {
 			break;
 		}
+		// Carriage return, continue reading till the newline symbol.
 		else if(data[i] == '\r') {
 			continue;
 		}
+		// Read a space char, check the scenario and handle accordingly.
 		else if(data[i] == ' ') {
-			// Stop because the character read is a space separator.
+			// Characters have previously been read, so this is 
+			// a space separator. Break and return the opcode.
 			if(opcode != '') {
 				break;
 			}
-			// Ignore this as the first character read is a space.
+			// Continue reading, as the opcode stream is still empty.
 			else {
 				continue;
 			}
 		}
+		// This is a comma separator, break and return the opcode.
 		else if(data[i] == ',') {
 			break;
 		}
+		// This is a char belonging to the opcode.
 		else {
 			opcode += data[i];
 		}
