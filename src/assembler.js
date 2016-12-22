@@ -58,6 +58,7 @@ function readData(data) {
 
 	while(charIndex < data.length) {
 		argIndex = 0;
+		mcode = 0x00;
 		
 		opcodeLine = readLine(data);
 		opcode = readWord(opcodeLine);
@@ -65,19 +66,48 @@ function readData(data) {
 		console.log(opcodeLine);
 		
 		switch(opcode) {
+		
+		/*
+		 * Data Transfer Group
+		 */
 		case 'mov': 
 			/*
-			 * MOV r1, r2
+			 * Move instructions - 6 scenarios
 			 */
 			var r1 = readWord(opcodeLine);
 			var r2 = readWord(opcodeLine);
 			
-			var ddd = regToBitcode(r1);
-			var sss = regToBitcode(r2);
+			/*
+			 * MOV r1, r2
+			 * (r1) <- (r2)
+			 * Move Register
+			 */
+			if((r1[0] == 'r') && (r2[0] == 'r')) {
+				var ddd = regToBitcode(r1);
+				var sss = regToBitcode(r2);
+				
+				mcode = (0x01 << 6) | (ddd << 3) | (sss);
+			}
 			
-			mcode = (0x01 << 6) | (ddd << 3) | (sss);
+			/*
+			 * MOV r, M
+			 * (r) <- ((H)(L))
+			 * Move from memory
+			 */
+			else if((r1[0] == 'r') && (r2[0] == 'M')) {
+				var ddd = regToBitcode(r1);
+				
+				mcode = (0x01 << 6) | (ddd << 3) | (0x06);
+			}
+			
+			/*
+			 * MOV r1, r2
+			 */
+			
 			break;
-		default: break;
+		default:
+			mcode = 0x00;
+			break;
 		}
 		
 		console.log('0x' + mcode.toString(16).slice(-2));
@@ -94,8 +124,17 @@ function readLine(data) {
 	var opcodeLine = '';
 	
 	for(var i = charIndex; i < data.length; i++) {
-		// End of the line, so break and return the line that was parsed.
+		// Read the newline symbol and handle depending on the scenario.
 		if(data[i] == '\n') {
+			// Characters have previously been read, so this is the 
+			// end of the line. Break and return the opcode.
+			if(opcodeLine != '') {
+				break;
+			}
+			// This is a blank line, so continue reading.
+			else {
+				continue;
+			}
 			break;
 		}
 		// Carriage return, continue reading till the newline symbol.

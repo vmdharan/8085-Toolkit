@@ -1,3 +1,14 @@
 mov rA, rB
-mov rA, rC
-mov rB, rD
+mov rB, rC
+mov rC, rD
+mov rD, rE
+mov rE, rH
+mov rA, rL
+
+mov rA, M
+
+mov M, rB
+
+mvi rC, data
+
+mvi M, data
