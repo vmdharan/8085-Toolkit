@@ -208,6 +208,27 @@ function readData(data) {
 			byte3 = r3;
 			
 			break;
+		
+		case 'lda':
+			break;
+		
+		case 'sta':
+			break;
+		
+		case 'lhld':
+			break;
+			
+		case 'shld':
+			break;
+			
+		case 'ldax':
+			break;
+		
+		case 'stax':
+			break;
+			
+		case 'xchg':
+			break;
 			
 		/*
 		 * Default case - should not occur except where an opcode 
