@@ -49,16 +49,62 @@ function regToBitcode(reg) {
 }
 
 /*
+ * Determine the bitcode a given register pair.
+ * rp - Register pair
+ */
+function rpToBitcode(rp) {
+	var bits;
+	
+	switch(rp) {
+	case 'BC': bits = 0x00; break;
+	case 'DE': bits = 0x01; break;
+	case 'HL': bits = 0x02; break;
+	case 'SP': bits = 0x03; break;
+	default: console.log('[LOG] Error in rpToBitcode, rp value: ' + rp);
+		break;
+	}
+	
+	return bits;
+}
+
+/*
  * Read and parse 8085 assembly language instructions from the data stream.
  * data - character stream.
  */
 function readData(data) {
 	var opcode, opcodeLine;
 	var mcode = 0;
+	
+	// Registers or arguments to opcodes.
+	var r1 = '';
+	var r2 = '';
+	var r3 = '';
+	
+	// Register pair bitcode.
+	var rp = 0x00;
+	
+	// Destination register.
+	var ddd = 0x00;
+	
+	// Source register.
+	var sss = 0x00;
+	
+	// Data bytes.
+	var byte2 = 0x00;
+	var byte3 = 0x00;
 
 	while(charIndex < data.length) {
 		argIndex = 0;
 		mcode = 0x00;
+		
+		r1 = '';
+		r2 = '';
+		r3 = '';
+		rp = 0x00;
+		ddd = 0x00;
+		sss = 0x00;
+		byte2 = 0x00;
+		byte3 = 0x00;
 		
 		opcodeLine = readLine(data);
 		opcode = readWord(opcodeLine);
@@ -69,11 +115,19 @@ function readData(data) {
 		
 		/*
 		 * Data Transfer Group
+		 * MOV, MVI, LXI, LDA, STA, LHLD, SHLD, LDAX, STAX, XCHG
+		 */
+		
+		/*
+		 * Move instructions.
+		 * 1 - Register to register
+		 * 2 - Memory to register
+		 * 3 - Register to memory
 		 */
 		case 'mov': 
 			// Read the arguments for the opcode.
-			var r1 = readWord(opcodeLine);
-			var r2 = readWord(opcodeLine);
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
 			
 			/*
 			 * MOV r1, r2
@@ -81,9 +135,8 @@ function readData(data) {
 			 * Move Register
 			 */
 			if((r1[0] == 'r') && (r2[0] == 'r')) {
-				var ddd = regToBitcode(r1);
-				var sss = regToBitcode(r2);
-				
+				ddd = regToBitcode(r1);
+				sss = regToBitcode(r2);
 				mcode = (0x01 << 6) | (ddd << 3) | (sss);
 			}
 			
@@ -93,8 +146,7 @@ function readData(data) {
 			 * Move from memory
 			 */
 			else if((r1[0] == 'r') && (r2[0] == 'M')) {
-				var ddd = regToBitcode(r1);
-				
+				ddd = regToBitcode(r1);
 				mcode = (0x01 << 6) | (ddd << 3) | (0x06);
 			}
 			
@@ -104,18 +156,69 @@ function readData(data) {
 			 * Move to memory
 			 */
 			else if((r1[0] == 'M') && (r2[0] == 'r')) {
-				var sss = regToBitcode(r2);
-				
+				sss = regToBitcode(r2);
 				mcode = (0x01 << 6) | (0x06 << 3) | (sss);
 			}
 			
 			break;
+		
+		case 'mvi':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			
+			/*
+			 * MVI r, data
+			 * (r) <- (byte 2)
+			 * Move immediate
+			 */
+			if(r1[0] == 'r') {
+				ddd = regToBitcode(r1);
+				mcode = (0x00 << 6) | (ddd << 3) | (0x06);
+				byte2 = r2;
+			}
+			
+			/*
+			 * MVI M, data
+			 * ((H)(L)) <- (byte 2)
+			 * Move to memory immediate
+			 */
+			else if(r1[0] == 'M') {
+				mcode = (0x00 << 6) | (0x06 << 3) | (0x06);
+				byte2 = r2;
+			}
+			
+			break;
+		
+		case 'lxi':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			r3 = readWord(opcodeLine);
+			
+			/*
+			 * LXI rp, data16
+			 * (rh) <- (byte3)
+			 * (rl) <- (byte2)
+			 * Load register pair immediate
+			 */
+			rp = rpToBitcode(r1);
+			mcode = (0x00 << 6) | (rp << 4) | (0x01);
+			byte2 = r2;
+			byte3 = r3;
+			
+			break;
+			
+		/*
+		 * Default case - should not occur except where an opcode 
+		 * is specified in the source that has not been implemented.
+		 */	
 		default:
 			mcode = 0x00;
 			break;
 		}
-		
-		console.log('0x' + mcode.toString(16).slice(-2));
+
+		console.log('0x' + ('00' + mcode.toString(16)).slice(-2));
 	}
 }
 
