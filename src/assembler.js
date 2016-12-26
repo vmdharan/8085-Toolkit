@@ -315,6 +315,46 @@ function readData(data) {
 			break;
 			
 		/*
+		 * Stack, I/O and Machine Control Group
+		 * PUSH, POP, XTHL, SPHL, IN, OUT, EI, DI, HLT, NOP, RIM, SIM
+		 */
+		case 'push':
+			break;
+			
+		case 'pop':
+			break;
+			
+		case 'xthl':
+			break;
+			
+		case 'sphl':
+			break;
+			
+		case 'in':
+			break;
+			
+		case 'out':
+			break;
+			
+		case 'ei':
+			break;
+			
+		case 'di':
+			break;
+			
+		case 'hlt':
+			break;
+			
+		case 'nop':
+			break;
+			
+		case 'rim':
+			break;
+			
+		case 'sim':
+			break;
+			
+		/*
 		 * Default case - should not occur except where an opcode 
 		 * is specified in the source that has not been implemented.
 		 */	
