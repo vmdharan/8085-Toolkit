@@ -7,7 +7,6 @@ add rH
 add rL
 
 add M
-
 adi 0x42
 
 adc rA
@@ -19,6 +18,27 @@ adc rH
 adc rL
 
 adc M
+aci 0x43
 
-aci 0x42
+sub rA
+sub rB
+sub rC
+sub rD
+sub rE
+sub rH
+sub rL
+
+sub M
+sui 0x44
+
+sbb rA
+sbb rB
+sbb rC
+sbb rD
+sbb rE
+sbb rH
+sbb rL
+
+sbb M
+sbi 0x45
 

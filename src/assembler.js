@@ -390,6 +390,7 @@ function readData(data) {
 			else {
 				console.log('[LOG] Error in ADC, r1 = ' + r1);
 			}
+			
 			break;
 
 		case 'aci':
@@ -403,18 +404,93 @@ function readData(data) {
 			 */
 			mcode = (0xce);
 			byte2 = r1;
+			
 			break;
 
 		case 'sub':
+			// Read the register for the subtraction.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * SUB r
+			 * (A) <- (A) - (r)
+			 * Subtract register
+			 */
+			if(r1[0] == 'r') {
+				sss = regToBitcode(r1);
+				mcode = (0x09 << 4) | (sss);
+			}
+			
+			/*
+			 * SUB M
+			 * (A) <- (A) - ((H)(L))
+			 * Subtract memory
+			 */
+			else if(r1[0] == 'M') {
+				mcode = (0x96);
+			}
+			
+			else {
+				console.log('[LOG] Error in SUB, r1 = ' + r1);
+			}
+			
 			break;
 
 		case 'sui':
+			// Read the data byte for the subtraction.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * SUI data
+			 * (A) <- (A) - (byte2)
+			 * Subtract immediate
+			 */
+			mcode = (0xd6);
+			byte2 = r1;
+			
 			break;
 
 		case 'sbb':
+			// Read the register for the subtraction.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * SBB r
+			 * (A) <- (A) - (r) - (CY)
+			 * Subtract register with borrow
+			 */
+			if(r1[0] == 'r') {
+				sss = regToBitcode(r1);
+				mcode = (0x09 << 4) | (0x01 << 3) | (sss);
+			}
+			
+			/*
+			 * SBB M
+			 * (A) <- (A) - ((H)(L)) - (CY)
+			 * Subtract memory with borrow
+			 */
+			else if(r1[0] == 'M') {
+				mcode = (0x9e);
+			}
+			
+			else {
+				console.log('[LOG] Error in SBB, r1 = ' + r1);
+			}
+			
 			break;
 
 		case 'sbi':
+			// Read the data byte for the subtraction.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * SBI data
+			 * (A) <- (A) - (byte2) - (CY)
+			 * Subtract immediate with borrow
+			 */
+			mcode = (0xde);
+			byte2 = r1;
+			
 			break;
 
 		case 'inr':
