@@ -398,33 +398,98 @@ function readData(data) {
 			break;
 			
 		case 'xthl':
+			/*
+			 * XTHL
+			 * (L) <-> ((SP))
+			 * (H) <-> ((SP) + 1)
+			 * Exchange stack top with H
+			 */
+			mcode = 0xe3;
 			break;
 			
 		case 'sphl':
+			/*
+			 * SPHL
+			 * (SP) <- (H)(L)
+			 * Move HL to SP
+			 */
+			mcode = 0xf9;
 			break;
 			
 		case 'in':
+			// Read the port.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * IN port
+			 * (A) <- (data)
+			 * Input
+			 */
+			mcode = 0xdb;
+			byte2 = r1;
+			
 			break;
 			
 		case 'out':
+			// Read the port.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * OUT port
+			 * (data) <- (A)
+			 * Output
+			 */
+			mcode = 0xd3;
+			byte2 = r1;
+			
 			break;
 			
 		case 'ei':
+			/*
+			 * EI
+			 * Enable interrupts
+			 */
+			mcode = 0xfb;
 			break;
 			
 		case 'di':
+			/*
+			 * DI
+			 * Disable interrupts
+			 */
+			mcode = 0xf3;
 			break;
 			
 		case 'hlt':
+			/*
+			 * HLT
+			 * Halt
+			 */
+			mcode = 0x76;
 			break;
 			
 		case 'nop':
+			/*
+			 * NOP
+			 * No-op
+			 */
+			mcode = 0x00;
 			break;
 			
 		case 'rim':
+			/*
+			 * RIM
+			 * Read Interrupt Masks
+			 */
+			mcode = 0x20;
 			break;
 			
 		case 'sim':
+			/*
+			 * SIM
+			 * Set Interrupt Masks
+			 */
+			mcode = 0x30;
 			break;
 			
 		/*

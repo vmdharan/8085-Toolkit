@@ -52,3 +52,13 @@ pop SP
 
 pop PSW
 
+xthl
+sphl
+in 32
+out 24
+ei
+di
+hlt
+nop
+rim
+sim
