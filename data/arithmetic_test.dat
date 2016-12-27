@@ -1,0 +1,24 @@
+add rA
+add rB
+add rC
+add rD
+add rE
+add rH
+add rL
+
+add M
+
+adi 0x42
+
+adc rA
+adc rB
+adc rC
+adc rD
+adc rE
+adc rH
+adc rL
+
+adc M
+
+aci 0x42
+

@@ -21,7 +21,8 @@ asm8085();
  */
 function asm8085() {
 	//this.srcFile = './data/data_transfer_test.dat';
-	this.srcFile = './data/stack_io_test.dat';
+	//this.srcFile = './data/stack_io_test.dat';
+	this.srcFile = './data/arithmetic_test.dat';
 	this.data = fs.readFileSync(this.srcFile, 'utf8');
 	
 	readData(this.data);
@@ -320,6 +321,119 @@ function readData(data) {
 		 * ADD, ADI, ADC, ACI, SUB, SUI, SBB, SBI, INR, DCR, INX, DXC, 
 		 * DAD, DAA
 		 */
+		case 'add':
+			// Read the register for the addition.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * ADD r
+			 * (A) <- (A) + (r)
+			 * Add register
+			 */
+			if(r1[0] == 'r') {
+				sss = regToBitcode(r1);
+				mcode = (0x08 << 4) | (sss);
+			}
+			
+			/*
+			 * ADD M
+			 * (A) <- (A) + ((H)(L))
+			 * Add memory
+			 */
+			else if(r1[0] == 'M') {
+				mcode = (0x86);
+			}
+			
+			else {
+				console.log('[LOG] Error in ADD, r1 = ' + r1);
+			}
+			
+			break;
+			
+		case 'adi':
+			// Read the data byte for the addition.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * ADI data
+			 * (A) <- (A) + (byte2)
+			 * Add immediate
+			 */
+			mcode = (0xc6);
+			byte2 = r1;
+			
+			break;
+
+		case 'adc':
+			// Read the register for the addition.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * ADC r
+			 * (A) <- (A) + (r) + (CY)
+			 * Add register with carry
+			 */
+			if(r1[0] == 'r') {
+				sss = regToBitcode(r1);
+				mcode = (0x08 << 4) | (0x01 << 3) | (sss);
+			}
+			
+			/*
+			 * ADC M
+			 * (A) <- (A) + ((H)(L)) + (CY)
+			 * Add memory with carry
+			 */
+			else if(r1[0] == 'M') {
+				mcode = (0x8e);
+			}
+			
+			else {
+				console.log('[LOG] Error in ADC, r1 = ' + r1);
+			}
+			break;
+
+		case 'aci':
+			// Read the data byte for the addition.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * ACI data
+			 * (A) <- (A) + (byte2) + (CY)
+			 * Add immediate with carry
+			 */
+			mcode = (0xce);
+			byte2 = r1;
+			break;
+
+		case 'sub':
+			break;
+
+		case 'sui':
+			break;
+
+		case 'sbb':
+			break;
+
+		case 'sbi':
+			break;
+
+		case 'inr':
+			break;
+			
+		case 'dcr':
+			break;
+
+		case 'inx':
+			break;
+			
+		case 'dxc':
+			break;
+			
+		case 'dad':
+			break;
+			
+		case 'daa':
+			break;
 			
 		/*
 		 * Logical Group
