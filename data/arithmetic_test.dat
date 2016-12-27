@@ -42,3 +42,30 @@ sbb rL
 sbb M
 sbi 0x45
 
+inr rA
+inr rB
+inr rC
+inr rD
+inr rE
+inr rH
+inr rL
+inr M
+
+dcr rA
+dcr rB
+dcr rC
+dcr rD
+dcr rE
+dcr rH
+dcr rL
+dcr M
+
+inx BC
+inx DE
+inx HL
+inx SP
+
+dcx BC
+dcx DE
+dcx HL
+dcx SP

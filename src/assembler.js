@@ -318,7 +318,7 @@ function readData(data) {
 		
 		/*
 		 * Arithmetic Group
-		 * ADD, ADI, ADC, ACI, SUB, SUI, SBB, SBI, INR, DCR, INX, DXC, 
+		 * ADD, ADI, ADC, ACI, SUB, SUI, SBB, SBI, INR, DCR, INX, DCX, 
 		 * DAD, DAA
 		 */
 		case 'add':
@@ -494,21 +494,112 @@ function readData(data) {
 			break;
 
 		case 'inr':
+			// Read the register to increment.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * INR r
+			 * (r) <- (r) + 1
+			 * Increment Register
+			 */
+			if(r1[0] == 'r') {
+				ddd = regToBitcode(r1);
+				mcode = (0x00 << 6) | (ddd << 3) | (0x04);
+			}
+			
+			/*
+			 * INR M
+			 * ((H)(L)) <- ((H)(L)) + 1
+			 * Increment Memory
+			 */
+			else if(r1[0] == 'M') {
+				mcode = (0x34);
+			}
+			
+			else {
+				console.log('[LOG] Error in INR, r1 = ' + r1);
+			}
+			
 			break;
 			
 		case 'dcr':
+			// Read the register to decrement.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * DCR r
+			 * (r) <- (r) + 1
+			 * Decrement Register
+			 */
+			if(r1[0] == 'r') {
+				ddd = regToBitcode(r1);
+				mcode = (0x00 << 6) | (ddd << 3) | (0x05);
+			}
+			
+			/*
+			 * DCR M
+			 * ((H)(L)) <- ((H)(L)) + 1
+			 * Decrement Memory
+			 */
+			else if(r1[0] == 'M') {
+				mcode = (0x35);
+			}
+			
+			else {
+				console.log('[LOG] Error in DCR, r1 = ' + r1);
+			}
+			
 			break;
 
 		case 'inx':
+			// Read the register pair to increment.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * INX rp
+			 * (rh)(rl) <- (rh)(rl) + 1
+			 * Increment register pair
+			 */
+			rp = rpToBitcode(r1);
+			mcode = (0x00 << 6) | (rp << 4) | (0x03);
+			
 			break;
 			
-		case 'dxc':
+		case 'dcx':
+			// Read the register pair to decrement.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * DCX rp
+			 * (rh)(rl) <- (rh)(rl) - 1
+			 * Decrement register pair.
+			 */
+			rp = rpToBitcode(r1);
+			mcode = (0x00 << 6) | (rp << 4) | (0x0b);
+			
 			break;
 			
 		case 'dad':
+			// Read the register pair.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * DAD rp
+			 * (H)(L) <- (H)(L) + (rh)(rl)
+			 * Add register pair to H and L.
+			 */
+			rp = rpToBitcode(r1);
+			mcode = (0x00 << 6) | (rp << 4) | (0x09);
+			
 			break;
 			
 		case 'daa':
+			/*
+			 * DAA
+			 * Decimal Adjust Accumulator
+			 */
+			mcode = (0x27);
+			
 			break;
 			
 		/*
