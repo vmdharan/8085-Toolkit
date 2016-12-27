@@ -20,7 +20,8 @@ asm8085();
  * Main entry point for the 8085 assembler.
  */
 function asm8085() {
-	this.srcFile = './data/8085test.dat';
+	//this.srcFile = './data/data_transfer_test.dat';
+	this.srcFile = './data/stack_io_test.dat';
 	this.data = fs.readFileSync(this.srcFile, 'utf8');
 	
 	readData(this.data);
@@ -313,6 +314,23 @@ function readData(data) {
 			mcode = (0xeb);
 			
 			break;
+		
+		/*
+		 * Arithmetic Group
+		 * ADD, ADI, ADC, ACI, SUB, SUI, SBB, SBI, INR, DCR, INX, DXC, 
+		 * DAD, DAA
+		 */
+			
+		/*
+		 * Logical Group
+		 * ANA, ANI, XRA, XRI, ORA, ORI, CMP, CPI, RLC, RRC, RAL, RAR, 
+		 * CMA, CMC, STC
+		 */
+			
+		/*
+		 * Branch Group
+		 * JMP, Jcondition, CALL, Ccondition, RET, Rcondition, RST, PCHL
+		 */
 			
 		/*
 		 * Stack, I/O and Machine Control Group

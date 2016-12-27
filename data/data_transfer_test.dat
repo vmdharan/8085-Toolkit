@@ -35,30 +35,3 @@ stax HL
 stax SP
 
 xchg
-
-push BC
-push DE
-push HL
-
-push SP
-
-push PSW
-
-pop BC
-pop DE
-pop HL
-
-pop SP
-
-pop PSW
-
-xthl
-sphl
-in 32
-out 24
-ei
-di
-hlt
-nop
-rim
-sim
