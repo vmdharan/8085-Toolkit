@@ -318,10 +318,83 @@ function readData(data) {
 		 * Stack, I/O and Machine Control Group
 		 * PUSH, POP, XTHL, SPHL, IN, OUT, EI, DI, HLT, NOP, RIM, SIM
 		 */
+			
 		case 'push':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * PUSH rp
+			 * ((SP) - 1) <- (rh)
+			 * ((SP) - 2) <- (rl)
+			 * (SP) <- (SP) - 2
+			 * Push
+			 * Note: rp = SP may not be specified.
+			 */
+			if(r1 == 'SP') {
+				console.log('[LOG] Error in Push instruction, rp = ' + r1);
+			}
+			
+			else if((r1 == 'BC') || (r1 == 'DE') || (r1 == 'HL')) {
+				rp = rpToBitcode(r1);
+				mcode = (0x03 << 6) | (rp << 4) | (0x05);
+			}
+			
+			/*
+			 * PUSH PSW
+			 * ((SP) - 1) <- (A)
+			 * ((SP) - 2)0 <- (CY), ((SP) - 2)1 <- X
+			 * ((SP) - 2)2 <- (P), ((SP) - 2)3 <- X
+			 * ((SP) - 2)4 <- (AC), ((SP) - 2)5 <- X
+			 * ((SP) - 2)6 <- (Z), ((SP) - 2)7 <- (S)
+			 * (SP) <- (SP) - 2, X: Undefined
+			 * Push processor status word
+			 */
+			else if(r1 == 'PSW') {
+				// Case where the rp == SP (bitcode 11).
+				//mcode = (0x03 << 6) | (0x03 << 4) | (0x05);
+				mcode = 0xf5;
+			}
+			
 			break;
 			
 		case 'pop':
+			// Read the arguments for the opcode.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * POP rp
+			 * (rl) <- ((SP))
+			 * (rh) <- ((SP) + 1)
+			 * (SP) <- ((SP) + 2)
+			 * Pop
+			 * Note: rp = SP may not be specified.
+			 */
+			if(r1 == 'SP') {
+				console.log('[LOG] Error in Pop instruction, rp = ' + r1);
+			}
+			
+			else if((r1 == 'BC') || (r1 == 'DE') || (r1 == 'HL')) {
+				rp = rpToBitcode(r1);
+				mcode = (0x03 << 6) | (rp << 4) | (0x01);
+			}
+			
+			/*
+			 * POP PSW
+			 * (CY) <- ((SP))0
+			 * (P) <- ((SP))2
+			 * (AC) <- ((SP))4
+			 * (Z) <- ((SP))6
+			 * (S) <- ((SP))7
+			 * (A) <- ((SP) + 1)
+			 * (SP) <- (SP) + 2
+			 * Pop processor status word.
+			 */
+			else if(r1 == 'PSW') {
+				// Case where the rp == SP (bitcode 11).
+				mcode = 0xf1;
+			}
+			
 			break;
 			
 		case 'xthl':
@@ -359,6 +432,7 @@ function readData(data) {
 		 * is specified in the source that has not been implemented.
 		 */	
 		default:
+			console.log('[LOG] opcode not valid.')
 			mcode = 0x00;
 			break;
 		}
