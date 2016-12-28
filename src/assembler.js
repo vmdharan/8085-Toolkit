@@ -607,6 +607,85 @@ function readData(data) {
 		 * ANA, ANI, XRA, XRI, ORA, ORI, CMP, CPI, RLC, RRC, RAL, RAR, 
 		 * CMA, CMC, STC
 		 */
+		case 'ana':
+			// Read the register to be processed.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * ANA r
+			 * (A) <- (A) ^ (r)
+			 * AND Register
+			 */
+			if(r1[0] == 'r') {
+				sss = regToBitcode(r1);
+				mcode = (0x0a << 4) | (sss);
+			}
+			
+			/*
+			 * ANA M
+			 * (A) <- (A) ^ ((H)(L))
+			 */
+			else if(r1[0] == 'M') {
+				mcode = (0xa6);
+			}
+			
+			else {
+				console.log('[LOG] Error in ANA, r1 = ' + r1);
+			}
+			
+			break;
+			
+		case 'ani':
+			// Read the data byte to be processed.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * ANA M
+			 * (A) <- (A) ^ (byte 2)
+			 * AND instruction
+			 */
+			mcode = (0xe6);
+			
+			break;
+			
+		case 'xra':
+			break;
+			
+		case 'xri':
+			break;
+			
+		case 'ora':
+			break;
+			
+		case 'ori':
+			break;
+			
+		case 'cmp':
+			break;
+			
+		case 'cpi':
+			break;
+			
+		case 'rlc':
+			break;
+			
+		case 'rrc':
+			break;
+			
+		case 'ral':
+			break;
+			
+		case 'rar':
+			break;
+			
+		case 'cma':
+			break;
+			
+		case 'cmc':
+			break;
+			
+		case 'stc':
+			break;
 			
 		/*
 		 * Branch Group
