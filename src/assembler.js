@@ -53,6 +53,29 @@ function regToBitcode(reg) {
 }
 
 /*
+ * Determine the bitcode for a condition.
+ * cond - condition
+ */
+function condToBitcode(cond) {
+	var bits;
+	
+	switch(cond) {
+	case 'nz': bits = 0x00; break;
+	case 'z': bits = 0x01; break;
+	case 'nc': bits = 0x02; break;
+	case 'c': bits = 0x03; break;
+	case 'po': bits = 0x04; break;
+	case 'pe': bits = 0x05; break;
+	case 'p': bits = 0x06; break;
+	case 'm': bits = 0x07; break;
+	default: console.log('[LOG] Error in condToBitcode, cond value: ' + cond);
+		break;
+	}
+	
+	return bits;
+}
+
+/*
  * Determine the bitcode a given register pair.
  * rp - Register pair
  */
@@ -96,6 +119,9 @@ function readData(data) {
 	// Data bytes.
 	var byte2 = 0x00;
 	var byte3 = 0x00;
+	
+	// Condition bits.
+	var ccc = 0x00;
 
 	while(charIndex < data.length) {
 		argIndex = 0;
@@ -107,6 +133,7 @@ function readData(data) {
 		rp = 0x00;
 		ddd = 0x00;
 		sss = 0x00;
+		ccc = 0x00;
 		byte2 = 0x00;
 		byte3 = 0x00;
 		
@@ -856,6 +883,15 @@ function readData(data) {
 		/*
 		 * Branch Group
 		 * JMP, Jcondition, CALL, Ccondition, RET, Rcondition, RST, PCHL
+		 * Conditions can be one of the following:
+		 * NZ - not zero (Z = 0)
+		 * Z - zero (Z = 1)
+		 * NC - no carry (CY = 0)
+		 * C - carry (CY = 1)
+		 * PO - parity odd (P = 0)
+		 * PE - parity even (P = 1)
+		 * P - plus (S = 0)
+		 * M - minus (S = 1)
 		 */
 		case 'jmp':
 			// Read the address bytes.
@@ -872,8 +908,67 @@ function readData(data) {
 			byte3 = r2;
 			
 			break;
+		
+		/*
+		 * Jcondition - JNZ, JZ, JNC, JC, JPO, JPE, JP, JM
+		 * If (CCC)
+		 * (PC) <- (byte 3) (byte 2)
+		 * Conditional jump
+		 */
+		case 'jnz':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('nz');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			break;
 			
-		case 'jcondition':
+		case 'jz':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('z');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			break;
+			
+		case 'jnc':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('nc');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			break;
+			
+		case 'jc':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('c');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			break;
+			
+		case 'jpo':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('po');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			break;
+			
+		case 'jpe':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('pe');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			break;
+			
+		case 'jp':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('p');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			break;
+			
+		case 'jm':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('m');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
 			break;
 			
 		case 'call':
@@ -895,7 +990,37 @@ function readData(data) {
 			
 			break;
 			
-		case 'ccondition':
+		/*
+		 * Ccondition - CNZ, CZ, CNC, CC, CPO, CPE, CP, CM
+		 * If (CCC)
+		 * ((SP) - 1) <- (PCH)
+		 * ((SP) - 2) <- (PCL)
+		 * (SP) <- (SP) - 2
+		 * (PC) <- (byte 3) (byte 2)
+		 * Conditional call
+		 */
+		case 'cnz':
+			break;
+				
+		case 'cz':
+			break;
+				
+		case 'cnc':
+			break;
+				
+		case 'cc':
+			break;
+				
+		case 'cpo':
+			break;
+				
+		case 'cpe':
+			break;
+				
+		case 'cp':
+			break;
+				
+		case 'cm':
 			break;
 			
 		case 'ret':
@@ -909,7 +1034,36 @@ function readData(data) {
 			mcode = 0xc9;
 			break;
 			
-		case 'rcondition':
+		/*
+		 * Rcondition - RNZ, RZ, RNC, RC, RPO, RPE, RP, RM
+		 * If (CCC)
+		 * (PCL) <- ((SP))
+		 * (PCH) <- ((SP) + 1)
+		 * (SP) <- (SP) + 2
+		 * Conditional return
+		 */
+		case 'rnz':
+			break;
+				
+		case 'rz':
+			break;
+				
+		case 'rnc':
+			break;
+				
+		case 'rc':
+			break;
+				
+		case 'rpo':
+			break;
+				
+		case 'rpe':
+			break;
+				
+		case 'rp':
+			break;
+				
+		case 'rm':
 			break;
 			
 		case 'rst':
