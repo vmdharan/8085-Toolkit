@@ -1179,6 +1179,20 @@ function readData(data) {
 			break;
 			
 		case 'rst':
+			// Read the 3-bit number provided as the argument.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * RST n
+			 * ((SP) - 1) <- (PCH)
+			 * ((SP) - 2) <- (PCL)
+			 * (SP) <- (SP) - 2
+			 * (PC) <- 8 * (NNN)
+			 * Restart
+			 */
+			var nnn = r1 & 0x07;
+			mcode = (0x03 << 6) | (nnn << 3) | (0x07);
+			
 			break;
 			
 		case 'pchl':
