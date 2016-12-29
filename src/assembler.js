@@ -858,18 +858,55 @@ function readData(data) {
 		 * JMP, Jcondition, CALL, Ccondition, RET, Rcondition, RST, PCHL
 		 */
 		case 'jmp':
+			// Read the address bytes.
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			
+			/*
+			 * JMP addr
+			 * (PC) <- (byte 3) (byte 2)
+			 * Jump
+			 */
+			mcode = 0xc3;
+			byte2 = r1;
+			byte3 = r2;
+			
 			break;
 			
 		case 'jcondition':
 			break;
 			
 		case 'call':
+			// Read the address bytes.
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			
+			/*
+			 * CALL addr
+			 * ((SP) - 1) <- (PCH)
+			 * ((SP) - 2) <- (PCL)
+			 * (SP) <- (SP) - 2
+			 * (PC) <- (byte 3) (byte 2)
+			 * Call
+			 */
+			mcode = 0xcd;
+			byte2 = r1;
+			byte3 = r2;
+			
 			break;
 			
 		case 'ccondition':
 			break;
 			
 		case 'ret':
+			/*
+			 * RET
+			 * (PCL) <- ((SP));
+			 * (PCH) <- ((SP) + 1);
+			 * (SP) <- (SP) + 2;
+			 * Return
+			 */
+			mcode = 0xc9;
 			break;
 			
 		case 'rcondition':
@@ -879,6 +916,13 @@ function readData(data) {
 			break;
 			
 		case 'pchl':
+			/*
+			 * PCHL
+			 * (PCH) <- (H)
+			 * (PCL) <- (L)
+			 * Jump H and L indirect - move H and L to PC
+			 */
+			mcode = 0xe9;
 			break;
 			
 		/*
