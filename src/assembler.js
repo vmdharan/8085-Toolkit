@@ -920,6 +920,8 @@ function readData(data) {
 			r2 = readWord(opcodeLine);
 			ccc = condToBitcode('nz');
 			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'jz':
@@ -927,6 +929,8 @@ function readData(data) {
 			r2 = readWord(opcodeLine);
 			ccc = condToBitcode('z');
 			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'jnc':
@@ -934,6 +938,8 @@ function readData(data) {
 			r2 = readWord(opcodeLine);
 			ccc = condToBitcode('nc');
 			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'jc':
@@ -941,6 +947,8 @@ function readData(data) {
 			r2 = readWord(opcodeLine);
 			ccc = condToBitcode('c');
 			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'jpo':
@@ -948,6 +956,8 @@ function readData(data) {
 			r2 = readWord(opcodeLine);
 			ccc = condToBitcode('po');
 			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'jpe':
@@ -955,6 +965,8 @@ function readData(data) {
 			r2 = readWord(opcodeLine);
 			ccc = condToBitcode('pe');
 			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'jp':
@@ -962,6 +974,8 @@ function readData(data) {
 			r2 = readWord(opcodeLine);
 			ccc = condToBitcode('p');
 			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'jm':
@@ -969,6 +983,8 @@ function readData(data) {
 			r2 = readWord(opcodeLine);
 			ccc = condToBitcode('m');
 			mcode = (0x03 << 6) | (ccc << 3) | (0x02);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'call':
@@ -1000,27 +1016,75 @@ function readData(data) {
 		 * Conditional call
 		 */
 		case 'cnz':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('nz');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x04);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'cz':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('z');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x04);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'cnc':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('nc');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x04);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'cc':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('c');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x04);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'cpo':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('po');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x04);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'cpe':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('pe');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x04);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'cp':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('p');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x04);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'cm':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('m');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x04);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'ret':
@@ -1043,27 +1107,75 @@ function readData(data) {
 		 * Conditional return
 		 */
 		case 'rnz':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('nz');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x00);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'rz':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('z');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x00);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'rnc':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('nc');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x00);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'rc':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('c');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x00);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'rpo':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('po');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x00);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'rpe':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('pe');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x00);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'rp':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('p');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x00);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 				
 		case 'rm':
+			r1 = readWord(opcodeLine);
+			r2 = readWord(opcodeLine);
+			ccc = condToBitcode('m');
+			mcode = (0x03 << 6) | (ccc << 3) | (0x00);
+			byte2 = r1;
+			byte3 = r2;
 			break;
 			
 		case 'rst':
