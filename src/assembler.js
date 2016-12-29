@@ -222,7 +222,7 @@ function readData(data) {
 			 * (A) <- ((byte3)(byte2))
 			 * Load Accumulator direct
 			 */
-			mcode = (0x3a);
+			mcode = 0x3a;
 			byte2 = r1;
 			byte3 = r2;
 			
@@ -238,7 +238,7 @@ function readData(data) {
 			 * ((byte3)(byte2)) <- (A)
 			 * Store Accumulator direct
 			 */
-			mcode = (0x32);
+			mcode = 0x32;
 			byte2 = r1;
 			byte3 = r2;
 			
@@ -255,7 +255,7 @@ function readData(data) {
 			 * (H) <- ((byte3)(byte2) + 1)
 			 * Load H and L direct
 			 */
-			mcode = (0x2a);
+			mcode = 0x2a;
 			byte2 = r1;
 			byte3 = r2;
 			
@@ -272,7 +272,7 @@ function readData(data) {
 			 * ((byte3)(byte2) + 1) <- (H)
 			 * Store H and L direct
 			 */
-			mcode = (0x22);
+			mcode = 0x22;
 			byte2 = r1;
 			byte3 = r2;
 			
@@ -313,7 +313,7 @@ function readData(data) {
 			 * (L) <-> (E)
 			 * Exchange H and L with D and E.
 			 */
-			mcode = (0xeb);
+			mcode = 0xeb;
 			
 			break;
 		
@@ -342,7 +342,7 @@ function readData(data) {
 			 * Add memory
 			 */
 			else if(r1[0] == 'M') {
-				mcode = (0x86);
+				mcode = 0x86;
 			}
 			
 			else {
@@ -360,7 +360,7 @@ function readData(data) {
 			 * (A) <- (A) + (byte2)
 			 * Add immediate
 			 */
-			mcode = (0xc6);
+			mcode = 0xc6;
 			byte2 = r1;
 			
 			break;
@@ -385,7 +385,7 @@ function readData(data) {
 			 * Add memory with carry
 			 */
 			else if(r1[0] == 'M') {
-				mcode = (0x8e);
+				mcode = 0x8e;
 			}
 			
 			else {
@@ -403,7 +403,7 @@ function readData(data) {
 			 * (A) <- (A) + (byte2) + (CY)
 			 * Add immediate with carry
 			 */
-			mcode = (0xce);
+			mcode = 0xce;
 			byte2 = r1;
 			
 			break;
@@ -428,7 +428,7 @@ function readData(data) {
 			 * Subtract memory
 			 */
 			else if(r1[0] == 'M') {
-				mcode = (0x96);
+				mcode = 0x96;
 			}
 			
 			else {
@@ -446,7 +446,7 @@ function readData(data) {
 			 * (A) <- (A) - (byte2)
 			 * Subtract immediate
 			 */
-			mcode = (0xd6);
+			mcode = 0xd6;
 			byte2 = r1;
 			
 			break;
@@ -471,7 +471,7 @@ function readData(data) {
 			 * Subtract memory with borrow
 			 */
 			else if(r1[0] == 'M') {
-				mcode = (0x9e);
+				mcode = 0x9e;
 			}
 			
 			else {
@@ -489,7 +489,7 @@ function readData(data) {
 			 * (A) <- (A) - (byte2) - (CY)
 			 * Subtract immediate with borrow
 			 */
-			mcode = (0xde);
+			mcode = 0xde;
 			byte2 = r1;
 			
 			break;
@@ -514,7 +514,7 @@ function readData(data) {
 			 * Increment Memory
 			 */
 			else if(r1[0] == 'M') {
-				mcode = (0x34);
+				mcode = 0x34;
 			}
 			
 			else {
@@ -543,7 +543,7 @@ function readData(data) {
 			 * Decrement Memory
 			 */
 			else if(r1[0] == 'M') {
-				mcode = (0x35);
+				mcode = 0x35;
 			}
 			
 			else {
@@ -599,7 +599,7 @@ function readData(data) {
 			 * DAA
 			 * Decimal Adjust Accumulator
 			 */
-			mcode = (0x27);
+			mcode = 0x27;
 			
 			break;
 			
@@ -625,9 +625,10 @@ function readData(data) {
 			/*
 			 * ANA M
 			 * (A) <- (A) ^ ((H)(L))
+			 * AND memory
 			 */
 			else if(r1[0] == 'M') {
-				mcode = (0xa6);
+				mcode = 0xa6;
 			}
 			
 			else {
@@ -641,51 +642,214 @@ function readData(data) {
 			r1 = readWord(opcodeLine);
 			
 			/*
-			 * ANA M
+			 * ANI data
 			 * (A) <- (A) ^ (byte 2)
-			 * AND instruction
+			 * AND immediate
 			 */
-			mcode = (0xe6);
+			mcode = 0xe6;
+			byte2 = r1;
 			
 			break;
 			
 		case 'xra':
+			// Read the register to be processed.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * XRA r
+			 * (A) <- (A) XOR (r)
+			 * Exclusive OR Register
+			 */
+			if(r1[0] == 'r') {
+				sss = regToBitcode(r1);
+				mcode = (0x0a << 4) | (0x01 << 3) | (sss);
+			}
+			
+			/*
+			 * XRA M
+			 * (A) <- (A) XOR ((H)(L))
+			 * Exclusive OR Memory
+			 */
+			else if(r1[0] == 'M') {
+				mcode = 0xae;
+			}
+			
+			else {
+				console.log('[LOG] Error in XRA, r1 = ' + r1);
+			}
+			
 			break;
 			
 		case 'xri':
+			// Read the data byte to be processed.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * XRI data
+			 * (A) <- (A) XOR (byte 2)
+			 * Exclusive OR immediate
+			 */
+			mcode = 0xee;
+			byte2 = r1;
+			
 			break;
 			
 		case 'ora':
+			// Read the register to be processed.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * ORA r
+			 * (A) <- (A) v (r)
+			 * OR Register
+			 */
+			if(r1[0] == 'r') {
+				sss = regToBitcode(r1);
+				mcode = (0x0b << 4) | (sss);
+			}
+			
+			/*
+			 * ORA M
+			 * (A) <- (A) v ((H)(L))
+			 * OR Memory
+			 */
+			else if(r1[0] == 'M') {
+				mcode = 0xb6;
+			}
+			
+			else {
+				console.log('[LOG] Error in ORA, r1 = ' + r1);
+			}
+			
 			break;
 			
 		case 'ori':
+			// Read the data byte to be processed.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * ORI data
+			 * (A) <- (A) v (byte 2)
+			 * OR immediate
+			 */
+			mcode = 0xf6;
+			byte2 = r1;
+			
 			break;
 			
 		case 'cmp':
+			// Read the register to be processed.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * CMP r
+			 * (A) - (r)
+			 * Compare Register
+			 * Note: The Z flag is set to 1 if (A) = (r).
+			 * The CY flag is set to 1 if (A) < (r).
+			 */
+			if(r1[0] == 'r') {
+				sss = regToBitcode(r1);
+				mcode = (0x0b << 4) | (0x01 << 3) | (sss);
+			}
+			
+			/*
+			 * CMP M
+			 * (A) - ((H)(L))
+			 * Compare Memory
+			 * Note: The Z flag is set to 1 if (A) = ((H)(L)).
+			 * The CY flag is set to 1 if (A) < ((H)(L)).
+			 */
+			else if(r1[0] == 'M') {
+				mcode = 0xbe;
+			}
+			
+			else {
+				console.log('[LOG] Error in CMP, r1 = ' + r1);
+			}
 			break;
 			
 		case 'cpi':
+			// Read the data byte to be processed.
+			r1 = readWord(opcodeLine);
+			
+			/*
+			 * CPI data
+			 * (A) - (byte 2)
+			 * Compare immediate.
+			 * Note: The Z flag is set to 1 if (A) = (byte 2).
+			 * The CY flag is set to 1 if (A) < (byte 2).
+			 */
+			mcode = 0xfe;
+			byte2 = r1;
+			
 			break;
 			
 		case 'rlc':
+			/*
+			 * RLC
+			 * (A[n+1] <- (An); (A0) <- (A7)
+			 * (CY) <- (A7)
+			 * Rotate left
+			 */
+			mcode = 0x07;
 			break;
 			
 		case 'rrc':
+			/*
+			 * RRC
+			 * (An) <- (A[n+1]); (A7) <- (A0)
+			 * (CY) <- (A0)
+			 * Rotate right
+			 */
+			mcode = 0x0f;
 			break;
 			
 		case 'ral':
+			/*
+			 * RAL
+			 * (A[n+1]) <- (An); (CY) <- (A7)
+			 * (A0) <- (CY)
+			 * Rotate left through carry
+			 */
+			mcode = 0x17;
 			break;
 			
 		case 'rar':
+			/*
+			 * RAR
+			 * (An) <- (An + 1); (CY) <- (A0)
+			 * (A7) <- (CY)
+			 * Rotate right through carry
+			 */
+			mcode = 0x1f;
 			break;
 			
 		case 'cma':
+			/*
+			 * CMA
+			 * (A) <- !(A)
+			 * Complement accumulator
+			 */
+			mcode = 0x2f;
 			break;
 			
 		case 'cmc':
+			/*
+			 * CMC
+			 * (CY) <- !(CY)
+			 * Complement carry
+			 */
+			mcode = 0x3f;
 			break;
 			
 		case 'stc':
+			/*
+			 * STC
+			 * (CY) <- 1
+			 * Set carry
+			 */
+			mcode = 0x37;
 			break;
 			
 		/*
