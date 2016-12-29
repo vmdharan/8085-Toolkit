@@ -23,7 +23,8 @@ function asm8085() {
 	//this.srcFile = './data/data_transfer_test.dat';
 	//this.srcFile = './data/stack_io_test.dat';
 	//this.srcFile = './data/arithmetic_test.dat';
-	this.srcFile = '../data/logical_test.dat';
+	//this.srcFile = './data/logical_test.dat';
+	this.srcFile = '../data/branch_test.dat';
 	this.data = fs.readFileSync(this.srcFile, 'utf8');
 	
 	readData(this.data);
@@ -856,6 +857,29 @@ function readData(data) {
 		 * Branch Group
 		 * JMP, Jcondition, CALL, Ccondition, RET, Rcondition, RST, PCHL
 		 */
+		case 'jmp':
+			break;
+			
+		case 'jcondition':
+			break;
+			
+		case 'call':
+			break;
+			
+		case 'ccondition':
+			break;
+			
+		case 'ret':
+			break;
+			
+		case 'rcondition':
+			break;
+			
+		case 'rst':
+			break;
+			
+		case 'pchl':
+			break;
 			
 		/*
 		 * Stack, I/O and Machine Control Group
