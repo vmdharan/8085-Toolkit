@@ -22,7 +22,8 @@ asm8085();
 function asm8085() {
 	//this.srcFile = './data/data_transfer_test.dat';
 	//this.srcFile = './data/stack_io_test.dat';
-	this.srcFile = './data/arithmetic_test.dat';
+	//this.srcFile = './data/arithmetic_test.dat';
+	this.srcFile = '../data/logical_test.dat';
 	this.data = fs.readFileSync(this.srcFile, 'utf8');
 	
 	readData(this.data);

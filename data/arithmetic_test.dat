@@ -69,3 +69,10 @@ dcx BC
 dcx DE
 dcx HL
 dcx SP
+
+dad BC
+dad DE
+dad HL
+dad SP
+
+daa

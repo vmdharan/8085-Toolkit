@@ -1,0 +1,51 @@
+ana rA
+ana rB
+ana rC
+ana rD
+ana rE
+ana rH
+ana rL
+ana M
+
+ani 0xa1
+
+xra rA
+xra rB
+xra rC
+xra rD
+xra rE
+xra rH
+xra rL
+xra M
+
+xri 0xa2
+
+ora rA
+ora rB
+ora rC
+ora rD
+ora rE
+ora rH
+ora rL
+ora M
+
+ori 0xa3
+
+cmp rA
+cmp rB
+cmp rC
+cmp rD
+cmp rE
+cmp rH
+cmp rL
+cmp M
+
+cpi 0xa4
+
+rlc
+rrc
+ral
+rar
+cma
+cmc
+stc
