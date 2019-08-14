@@ -1,11 +1,11 @@
 # 8085-Toolkit
 Compiler and Assembler for Intel 8085
 
-## Compiler
+### Compiler
 
 TO DO
 
-## Assembler instruction groups
+### Assembler instruction groups
 
 **Data Transfer Group**
 
@@ -34,4 +34,5 @@ Conditions can be one of the following:
 - M - minus (S = 1)
 
 **Stack, I/O and Machine Control Group**
+
 PUSH, POP, XTHL, SPHL, IN, OUT, EI, DI, HLT, NOP, RIM, SIM
