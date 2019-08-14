@@ -5,16 +5,16 @@ Compiler and Assembler for Intel 8085
 
 **Grammar**
 
-program -> block
-block -> decls stmts
-decls -> decls decl empty
-decl -> type id ;
-type -> type [num] | primitive
-stmts -> stmts stmt | empty
-stmt -> empty
+- program -> block
+- block -> decls stmts
+- decls -> decls decl empty
+- decl -> type id ;
+- type -> type [num] | primitive
+- stmts -> stmts stmt | empty
+- stmt -> empty
 
-empty -> null
-primitive -> char | int | float | boolean
+- empty -> null
+- primitive -> char | int | float | boolean
 
 
 
