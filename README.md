@@ -3,7 +3,20 @@ Compiler and Assembler for Intel 8085
 
 ### Compiler
 
-TO DO
+**Grammar**
+
+program -> block
+block -> decls stmts
+decls -> decls decl empty
+decl -> type id ;
+type -> type [num] | primitive
+stmts -> stmts stmt | empty
+stmt -> empty
+
+empty -> null
+primitive -> char | int | float | boolean
+
+
 
 ### Assembler instruction groups
 
