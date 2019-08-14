@@ -1,5 +1,11 @@
-# 8085-Assembler
-Convert 8085 instructions to machine code.
+# 8085-Toolkit
+Compiler and Assembler for Intel 8085
+
+## Compiler
+
+TO DO
+
+## Assembler instruction groups
 
 **Data Transfer Group**
 
