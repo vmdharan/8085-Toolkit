@@ -24,10 +24,12 @@ var SpecialTokens = {
     R_BRACKET: { pattern: ']', code: 4 },
     L_PAREN: { pattern: '(', code: 5 },
     R_PAREN: { pattern: ')', code: 6 },
-    LT_SYMBOL: { pattern: '<', code: 7 },
-    GT_SYMBOL: { pattern: '>', code: 8 },
+    D_EQUALS: { pattern: '==', code: 35 },
+    N_EQUALS: { pattern: '!=', code: 36 },
     LTE_SYMBOL: { pattern: '<=', code: 9 },
     GTE_SYMBOL: { pattern: '>=', code: 10 },
+    LT_SYMBOL: { pattern: '<', code: 7 },
+    GT_SYMBOL: { pattern: '>', code: 8 },
     F_SLASH: { pattern: '/', code: 11 },
     B_SLASH: { pattern: '\\', code: 12 },
     COMMA: { pattern: ',', code: 13 },
@@ -52,8 +54,7 @@ var SpecialTokens = {
     MINUS: { pattern: '-', code: 32 },
     PLUS: { pattern: '+', code: 33 },
     EQUAL: { pattern: '=', code: 34 },
-    D_EQUALS: { pattern: '==', code: 35 },
-    N_EQUALS: { pattern: '!=', code: 36 }
+    
 }
 
 module.exports = {

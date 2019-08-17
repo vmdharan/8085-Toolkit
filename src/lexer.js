@@ -4,6 +4,7 @@
 
 var fs = require('fs');
 const { Tokenizer } = require('./tokenizer');
+const { SpecialTokens, TypeTokens } = require('./token');
 
 var charIndex = 0;
 
@@ -60,18 +61,46 @@ function readTokens(line) {
 function splitTokens(token) {
     var tokens = [];
 
-    var specialChars = [
-        '{', '}', '[', ']', '(', ')', '<', '>',
-        '/', '\\', ',', '.', '?', ':', ';', '"', 
-        '\'', '|', '~', '`', '!', '@', '#', '$', 
-        '%', '^', '&', '*', '_', '-', '+', '=' 
-    ];
-    
-    for(var i=0; i<specialChars.length; i++) {
-        if(token.includes(specialChars[i])) {
-            token = token.replace(specialChars[i], ' ' + specialChars[i] + ' ');
+    // var specialChars = [
+    //     '{', '}', '[', ']', '(', ')', '<', '>',
+    //     '/', '\\', ',', '.', '?', ':', ';', '"', 
+    //     '\'', '|', '~', '`', '!', '@', '#', '$', 
+    //     '%', '^', '&', '*', '_', '-', '+', '=' 
+    // ];
+    var specialChars = [];
+    for(var e in SpecialTokens) {
+        var sc = Object.entries(SpecialTokens[e]);
+        var pattern = sc[0][1];
+        var code = sc[1][1];
+
+        if(token.includes(pattern)) {
+            console.log('prev: ' + token);
+            token = token.replace(pattern, ' ' + code + ' ');
+            console.log('after: ' + token);
+        }
+    };
+
+    for(var t in token) {
+        for(var f in TypeTokens)
+        {
+            var tc = Object.entries(TypeTokens[f]);
+            var pattern = tc[0][1];
+            var code = tc[1][1];
+
+            if(t == pattern) {
+                console.log('prev: ' + t);
+                t = t.replace(pattern, ' ' + code + ' ');
+                console.log('after: ' + t);
+            }
         }
     }
+    //console.log(specialChars);
+    
+    // for(var i=0; i<specialChars.length; i++) {
+    //     if(token.includes(specialChars[i])) {
+    //         token = token.replace(specialChars[i], ' ' + specialChars[i] + ' ');
+    //     }
+    // }
 
     tokens = token.split(' ');
     tokens = tokens.filter(f => f.trim().length != 0);
@@ -80,7 +109,7 @@ function splitTokens(token) {
         var x = new Tokenizer(e);
         console.log(x.type);
     });
-    
+
     return tokens;
 }
 
