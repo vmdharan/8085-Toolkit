@@ -3,6 +3,7 @@
  */
 
 var fs = require('fs');
+const { Tokenizer } = require('./tokenizer');
 
 var charIndex = 0;
 
@@ -74,6 +75,12 @@ function splitTokens(token) {
 
     tokens = token.split(' ');
     tokens = tokens.filter(f => f.trim().length != 0);
+
+    tokens.forEach(e => {
+        var x = new Tokenizer(e);
+        console.log(x.type);
+    });
+    
     return tokens;
 }
 
