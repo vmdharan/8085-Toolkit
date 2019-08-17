@@ -45,8 +45,8 @@ function readLine(data) {
     return currentLine;
 }
 
-function readTokens(line) {
-    var tokens = [];
+function readWords(line) {
+    var trimmedWords = [];
     var words = line.split(' ');
 
     for(var i=0; i<words.length; i++) {
@@ -54,13 +54,10 @@ function readTokens(line) {
             continue;
         }
 
-        tokens.push(words[i]);
-        //console.log(words[i]);
-        //var tokens = splitTokens(words[i]);
-        //console.log(tokens);
+        trimmedWords.push(words[i]);
     }
 
-    return tokens;
+    return trimmedWords;
 }
 
 function doStuff() {
@@ -69,9 +66,10 @@ function doStuff() {
 
     while(charIndex < data.length) {
         var dataLine = readLine(data);
-        var tokensRead = readTokens(dataLine);
-        for(var i=0; i<tokensRead.length; i++) {
-            var tokens = tokenizer.splitTokens(tokensRead[i]);
+        var wordsRead = readWords(dataLine);
+
+        for(var i=0; i<wordsRead.length; i++) {
+            var tokens = tokenizer.splitTokens(wordsRead[i]);
             console.log(tokens);
         }
     }

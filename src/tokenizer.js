@@ -3,44 +3,74 @@
  * Takes in Lexemes and outputs Tokens.
  */
 
-const { TypeTokens, SpecialTokens } = require('./token');
+const { Token, TypeTokens, SpecialTokens } = require('./token');
 
 class Tokenizer {
     constructor() {
 
     }
 
-    splitTokens(token) {
+    splitTokens(word) {
         var tokens = [];
-        
-        for (var e in SpecialTokens) {
-            var sc = Object.entries(SpecialTokens[e]);
-            var pattern = sc[0][1];
-            var code = sc[1][1];
 
-            if (token.includes(pattern)) {
-                //console.log('prev: ' + token);
-                token = token.replace(pattern, ' ' + code + ' ');
-                //console.log('after: ' + token);
+        console.log(word);
+
+        function replaceString(src, pattern, replacement) {
+            if (src.includes(pattern)) {
+                var index = src.indexOf(pattern, 0);
+                var patternLength = pattern.length;
+
+                if(index == 0) {
+                    
+                } else if(index > 0) {
+                    var sub1 = src.substring(0, index-1)
+                }
             }
-        };
+        }
 
-        for (var t in token) {
+        function readSpecialToken(src) {
+            for (var e in SpecialTokens) {
+                var sc = Object.entries(SpecialTokens[e]);
+                var pattern = sc[0][1];
+                var code = sc[1][1];
+
+                if (src.includes(pattern)) {
+                    console.log('prev: ' + src);
+                    src = src.replace(pattern, ' ' + new Token(code, '') + ' ');
+                    
+                    console.log('after: ' + src);
+                }
+            }
+
+            return src;
+        }
+
+        function readTypeToken(src) {
             for (var f in TypeTokens) {
                 var tc = Object.entries(TypeTokens[f]);
                 var pattern = tc[0][1];
                 var code = tc[1][1];
 
-                if (t == pattern) {
+                if (src == pattern) {
                     //console.log('prev: ' + t);
-                    t = t.replace(pattern, ' ' + code + ' ');
+                    src = src.replace(pattern, ' ' + new Token(code, '') + ' ');
                     //console.log('after: ' + t);
                 }
             }
+
+            return src;
         }
 
-        tokens = token.split(' ');
+        word = readSpecialToken(word);
+        word = readTypeToken(word);
+
+        tokens = word.split(' ');
         tokens = tokens.filter(f => f.trim().length != 0);
+
+        // var tokenList = [];
+        // for(var t=0; t<tokens.length; t++) {
+        //     var newToken = new Token()
+        // }
 
         return tokens;
     }
