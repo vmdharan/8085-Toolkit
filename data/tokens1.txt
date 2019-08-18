@@ -3,8 +3,10 @@ int main()
     int x;
     char y;
     float z;
+    char[5] a;
 
     x = 35;
     y != 'f';
     z == 1.204;
+    a = "Hello";
 }

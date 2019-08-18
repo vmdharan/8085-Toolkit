@@ -63,16 +63,20 @@ function readWords(line) {
 function doStuff() {
     var data = openFile('../data/tokens1.txt');
     var tokenizer = new Tokenizer();
+    var tokens = [];
 
     while(charIndex < data.length) {
         var dataLine = readLine(data);
         var wordsRead = readWords(dataLine);
 
         for(var i=0; i<wordsRead.length; i++) {
-            var tokens = tokenizer.splitTokens(wordsRead[i]);
-            console.log(tokens);
+            tokenizer.splitTokens(wordsRead[i]).forEach(f => {
+                tokens.push(f);
+            });
+            //console.log(tokens);
         }
     }
+    console.log(tokens);
 }
 
 doStuff();
