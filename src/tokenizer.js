@@ -15,62 +15,168 @@ class Tokenizer {
 
         console.log(word);
 
-        function replaceString(src, pattern, replacement) {
-            if (src.includes(pattern)) {
-                var index = src.indexOf(pattern, 0);
-                var patternLength = pattern.length;
-
-                if(index == 0) {
-                    
-                } else if(index > 0) {
-                    var sub1 = src.substring(0, index-1)
-                }
-            }
-        }
-
-        function readSpecialToken(src) {
+        function isSpecialToken(src) {
             for (var e in SpecialTokens) {
                 var sc = Object.entries(SpecialTokens[e]);
                 var pattern = sc[0][1];
                 var code = sc[1][1];
 
-                if (src.includes(pattern)) {
-                    console.log('prev: ' + src);
-                    src = src.replace(pattern, ' ' + new Token(code, '') + ' ');
-                    
-                    console.log('after: ' + src);
+                if (pattern.includes(src)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkSpecialToken(src) {
+            for (var e in SpecialTokens) {
+                var sc = Object.entries(SpecialTokens[e]);
+                var pattern = sc[0][1];
+                var code = sc[1][1];
+
+                if (src == pattern) {
+                    return code;
                 }
             }
 
-            return src;
+            return -1;
         }
 
-        function readTypeToken(src) {
+        function checkTypeToken(src) {
             for (var f in TypeTokens) {
                 var tc = Object.entries(TypeTokens[f]);
                 var pattern = tc[0][1];
                 var code = tc[1][1];
 
                 if (src == pattern) {
-                    //console.log('prev: ' + t);
-                    src = src.replace(pattern, ' ' + new Token(code, '') + ' ');
-                    //console.log('after: ' + t);
+                    return code;
                 }
             }
 
-            return src;
+            return -1;
         }
 
-        word = readSpecialToken(word);
-        word = readTypeToken(word);
+        // Returns true if the input ASCII code is a digit.
+        // ASCII code '0' starts at 48 and continues to '9' which is 57.
+        function isNumeric(c) {
+            if(c >= 48 && c < 58) {
+                return true;
+            }
+            return false;
+        }
 
-        tokens = word.split(' ');
-        tokens = tokens.filter(f => f.trim().length != 0);
+        // Returns true if the input ASCII code is an alphabet / letter.
+        // ASCII code 'A' starts at 65 and continues to 'Z' which is 90.
+        // ASCII code 'a' starts at 97 and continues to 'z' which is 122.
+        function isAlpha(c) {
+            if((c >= 65 && c < 91) || (c >= 97 && c < 123)) {
+                return true;
+            }
+            return false;
+        }
 
-        // var tokenList = [];
-        // for(var t=0; t<tokens.length; t++) {
-        //     var newToken = new Token()
-        // }
+        // Returns true if the input ASCII code is an underscore character.
+        // ASCII code for underscore '_' is 95.
+        function isUnderscore(c) {
+            if(c == 95) {
+                return true;
+            }
+            return false;
+        }
+
+        // Returns true if the input ASCII code is alphanumeric, containing 
+        // only letters and digits.
+        // ASCII code '0' starts at 48 and continues to '9' which is 57.
+        // ASCII code 'A' starts at 65 and continues to 'Z' which is 90.
+        // ASCII code 'a' starts at 97 and continues to 'z' which is 122.
+        function isAlphaNumeric(c) {
+            if((c >= 48 && c < 58) || (c >= 65 && c < 91) || (c >= 97 && c < 123)) {
+                return true;
+            }
+            return false;
+        }
+
+        // Returns true if the input ASCII code is alphanumeric, containing 
+        // only letters, digits and underscore.
+        // ASCII code '0' starts at 48 and continues to '9' which is 57.
+        // ASCII code 'A' starts at 65 and continues to 'Z' which is 90.
+        // ASCII code 'a' starts at 97 and continues to 'z' which is 122.
+        // ASCII code for underscore '_' is 95.
+        function isAlphaNumericOrUnderscore(c) {
+            if((c >= 48 && c < 58) || (c >= 65 && c < 91) || (c >= 97 && c < 123) || (c == 95)) {
+                return true;
+            }
+            return false;
+        }
+
+        function readChars(src) {
+            var buffer = '';
+
+            for(var i=0; i<src.length; i++) {
+                var c = src.charCodeAt(i);
+
+                if(isAlphaNumericOrUnderscore(c)) {
+                    buffer += src[i];
+                } else {
+                    // Write buffer containing alphanumeric characters.
+                    if(buffer.length > 0) {
+
+                        // Check if type token.
+                        var typeCode = checkTypeToken(buffer);
+                        if(typeCode > 0) {
+                            tokens.push(new Token('type', typeCode));
+                        } else {
+                            tokens.push(new Token('text', buffer));
+                        }
+                    }
+
+                    // Check for special characters.
+                    var sc = src[i];
+                    if(isSpecialToken(sc)) {
+                        // Check whether there is an addition character in the list.
+                        if((i+1) < src.length) {
+                            var sc2 = sc + src[i+1];
+                            
+                            if(isSpecialToken(sc2)) {
+                                buffer = sc2;
+                                i++;
+                            } else {
+                                buffer = sc;
+                            }
+                        } else {
+                            buffer = sc;
+                        }
+                        
+                        var tk = checkSpecialToken(buffer);
+                        if(tk > 0) {
+                            tokens.push(new Token('special', tk));
+                        } else {
+                            tokens.push(new Token('error', tk));
+                        }
+
+                        buffer = '';
+                    } else {
+                        // Encountered a character that is not supported.
+                        tokens.push(new Token('unknown', sc));
+                        buffer = '';
+                    }
+                }
+            }
+
+            // Save buffer
+            if(buffer.length > 0) {
+                
+                // Check if type token.
+                var typeCode = checkTypeToken(buffer);
+                if(typeCode > 0) {
+                    tokens.push(new Token('type', typeCode));
+                } else {
+                    tokens.push(new Token('text', buffer));
+                }
+            }
+        }
+
+        readChars(word);
 
         return tokens;
     }
