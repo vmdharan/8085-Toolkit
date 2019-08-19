@@ -13,8 +13,6 @@ class Tokenizer {
     splitTokens(word) {
         var tokens = [];
 
-        console.log(word);
-
         function isSpecialToken(src) {
             for (var e in SpecialTokens) {
                 var sc = Object.entries(SpecialTokens[e]);

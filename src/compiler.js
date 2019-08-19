@@ -3,7 +3,14 @@
  * Main entry point for the compiler.
  */
 
- var lexer = require('./lexer');
- var parser = require('./parser');
+ const { Lexer } = require('./lexer');
+ const parser = require('./parser');
 
- //ReadFileAndGenerateTokens();
+function doStuff() {
+    var lexer = new Lexer();
+    var tokens = lexer.ReadFileAndGenerateTokens('../data/tokens1.txt');
+
+    console.log(tokens);
+}
+
+doStuff();
